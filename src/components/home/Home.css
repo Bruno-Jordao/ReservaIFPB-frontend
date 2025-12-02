@@ -1,14 +1,14 @@
-/* IdeaProjects/ReservaIFPB-frontend/src/components/home/Home.css */
+
 
 .container-home{
-    width: 80%; /* Mais largo para o layout de grade */
+    width: 80%;
     max-width: 1000px;
     background-color: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
     border: 2px solid rgba(255, 255, 255, 0.2);
     padding: 40px;
     border-radius: 10px;
-    margin: 30px auto; /* Centraliza */
+    margin: 30px auto;
 }
 
 .container-home h1, .container-home p {
@@ -20,7 +20,7 @@
 
 .grid-options {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Cria um layout responsivo de grade */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
     padding-top: 20px;
 }
@@ -56,7 +56,7 @@
 }
 
 .card.logout {
-    background-color: rgba(255, 99, 71, 0.5); /* Cor para o botão de sair */
+    background-color: rgba(255, 99, 71, 0.5);
 }
 
 .card.logout:hover {
