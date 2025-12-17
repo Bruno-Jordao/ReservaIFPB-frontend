@@ -1,21 +1,6 @@
 *{
   margin: 0;
   padding: 0;
-  font-family: Helvetica;
   box-sizing: border-box;
-  text-shadow: #000 1px 1px;
   font-family: Helvetica;
-}
-
-.App{
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  background-size: cover;
-
-  min-height: 100vh;
-
-  background-image: url("assets/Reserva_IFPB_2.png");
-  background-repeat: no-repeat;
-  background-position: center top;
 }

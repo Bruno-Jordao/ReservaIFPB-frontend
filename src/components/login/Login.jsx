@@ -4,7 +4,6 @@ import axios from "axios";
 
 import "./Login.css";
 
-
 const Login = () => {
 
     const [username, setUsername] = useState("");
@@ -28,37 +27,49 @@ const Login = () => {
         }
     };
 
-  return (
-    <div className="container">
-        <form onSubmit={handleSubmit}>
-            <h1>Access the system</h1>
-            <div className="input-field">
-                <input type="email" placeholder='E-mail'
-                onChange={(e) => setUsername(e.target.value)}/>
-                <FaUser className="icon"/>
-            </div>
-            <div className="input-field">
-                <input type="password" placeholder='Password'
-                onChange={(e) => setPassword(e.target.value)}/>
-                <FaLock className="icon"/>
-            </div>
-            <div className="recall-forget">
-                <label>
-                    <input type="checkbox"/>
-                    Remember me
-                </label>
-                <a href="#">Forgot your password?</a>
-            </div>
-            <button>Enter</button>
-            <div className="signup-link">
-                <p>
-                    Don't have an account? <a href="#">Register</a>
-                </p>
-            </div>
-        </form>
-    </div>
+    return (
+        <div className="login-page">
+            <div className="container">
+                <form onSubmit={handleSubmit}>
+                    <h1>Access the system</h1>
 
-  )
-}
+                    <div className="input-field">
+                        <input
+                            type="email"
+                            placeholder="E-mail"
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                        <FaUser className="icon" />
+                    </div>
 
-export default Login
+                    <div className="input-field">
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <FaLock className="icon" />
+                    </div>
+
+                    <div className="recall-forget">
+                        <label>
+                            <input type="checkbox" />
+                            Remember me
+                        </label>
+                        <a href="#">Forgot your password?</a>
+                    </div>
+
+                    <button>Enter</button>
+
+                    <div className="signup-link">
+                        <p>
+                            Don't have an account? <a href="#">Register</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default Login;
