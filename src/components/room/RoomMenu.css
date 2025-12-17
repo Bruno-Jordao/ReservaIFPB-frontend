@@ -3,20 +3,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #0b6b3a, #084f2b);
+    background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
 }
 
 .container-room {
     width: 420px;
     background-color: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     padding: 40px;
     border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-}
-
-.container-room form {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -27,16 +23,11 @@
     text-align: center;
 }
 
-.room-list {
-    list-style: none;
-    padding: 0;
+.container-room button {
+    height: 45px;
+    border-radius: 30px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: #fff;
 }
-
-.room-item {
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    color: #fff;
-}
-
