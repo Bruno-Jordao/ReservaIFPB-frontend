@@ -1,8 +1,10 @@
 
 import Login from './components/login/Login';
+import BlockMenu from "./components/block/BlockMenu";
+import BlockPage from "./components/block/BlockPage";
 
 function App() {
-  return <Login />;
+  return <BlockPage />;
 }
 
 export default App;

@@ -1,0 +1,41 @@
+
+.block-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+}
+
+
+.container-block {
+    width: 400px;
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 40px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.container-block h1 {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.container-block button {
+    height: 45px;
+    border-radius: 30px;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.container-block button:hover {
+    opacity: 0.9;
+}
