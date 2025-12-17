@@ -1,52 +1,39 @@
-.container-block{
-    width: 450px;
-    background-color: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 20x solid rgba(255, 255, 255, 0.2);
-    padding: 40px;
+.block-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: linear-gradient(
+        135deg,
+        #0b6b3a,
+        #084f2b
+    );
+}
+
+.block-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.block-item {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
     border-radius: 10px;
-    margin-right: 30px;
+    margin-bottom: 15px;
+    color: #fff;
+    font-size: 14px;
 }
 
-.container-block h1{
+.info-text {
+    color: #fff;
     text-align: center;
-    font-size: 30px;
-    color: #fff;
+    margin: 20px 0;
 }
 
-.container-block .input-field{
-    position: relative;
-    width: 100%;
-    height: 50px;
-    margin: 30px auto;
-}
-
-.input-field input{
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-    outline: none;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 40px;
-    font-size: 16px;
-    color: #fff;
-    padding: 20px 25px;
-}
-
-.input-field input::placeholder{
-    color: #fff;
-}
-
-.container-block button{
-    width: 100%;
-    height: 50px;
-    background-color: #fff;
-    border: none;
-    outline: none;
-    border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
-    text-shadow: none;
+.container-block form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
