@@ -36,3 +36,21 @@
 .container-campus button:hover {
     opacity: 0.9;
 }
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.button-group button, form button {
+    width: 85%;
+    margin: 5px auto;
+    padding: 12px;
+}
+
+.secondary-button {
+    background-color: #f5f5f5;
+    color: #333;
+}
