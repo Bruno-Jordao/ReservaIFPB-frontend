@@ -12,13 +12,7 @@ const BlockMenu = ({ onSelect, goHome }) => {
                 <button onClick={() => onSelect("update")}>Update Block</button>
                 <button onClick={() => onSelect("delete")}>Delete Block</button>
 
-                {/* botão novo */}
-                <button
-                    className="secondary-button"
-                    onClick={goHome}
-                >
-                    Back to Home
-                </button>
+                <button onClick={goHome}>Back to Home</button>
             </div>
         </div>
     );

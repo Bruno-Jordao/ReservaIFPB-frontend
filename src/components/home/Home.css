@@ -1,64 +1,67 @@
+.home-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Mesmo gradiente usado em Campus e Reservation */
+    background: linear-gradient(
+            135deg,
+            #0b6b3a,
+            #084f2b
+    );
+}
 
-
-.container-home{
-    width: 80%;
-    max-width: 1000px;
-    background-color: rgba(255, 255, 255, 0.15);
+.container-home {
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.2);
     padding: 40px;
-    border-radius: 10px;
-    margin: 30px auto;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-.container-home h1, .container-home p {
-    text-align: center;
-    color: #fff;
+.home-logo {
+    width: 150px;
     margin-bottom: 20px;
-    text-shadow: #000 1px 1px;
 }
 
-.grid-options {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    padding-top: 20px;
+.container-home h1 {
+    color: #fff;
+    margin-bottom: 30px;
+    font-size: 24px;
 }
 
-.card {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.container-home button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 5px;
     cursor: pointer;
+    background-color: #0b6b3a;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: bold;
+    font-size: 16px;
     transition: all 0.3s ease;
-    border: 1px solid transparent;
 }
 
-.card:hover {
-    background-color: rgba(255, 255, 255, 0.5);
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.container-home button:hover {
+    background-color: #084f2b;
+    transform: translateY(-2px);
 }
 
-.icon-home {
-    font-size: 40px;
-    color: #fff;
-    margin-bottom: 10px;
-    text-shadow: #000 1px 1px;
+.container-home button.danger {
+    background-color: #d9534f;
+    margin-top: 5px;
 }
 
-.card h2 {
-    font-size: 18px;
-    margin: 0;
-    color: #fff;
-    text-shadow: #000 1px 1px;
-}
-
-.card.logout {
-    background-color: rgba(255, 99, 71, 0.5);
-}
-
-.card.logout:hover {
-    background-color: tomato;
+.container-home button.danger:hover {
+    background-color: #c9302c;
 }

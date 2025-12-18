@@ -7,7 +7,7 @@ import BlockFind from "./BlockFind";
 import BlockUpdate from "./BlockUpdate";
 import BlockDelete from "./BlockDelete";
 
-const BlockPage = () => {
+const BlockPage = ({ goHome }) => {
     const [screen, setScreen] = useState("menu");
 
     switch (screen) {
@@ -22,7 +22,7 @@ const BlockPage = () => {
         case "delete":
             return <BlockDelete goBack={() => setScreen("menu")} />;
         default:
-            return <BlockMenu onSelect={setScreen} />;
+            return <BlockMenu onSelect={setScreen} goHome={goHome} />;
     }
 };
 
