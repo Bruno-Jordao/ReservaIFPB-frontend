@@ -1,61 +1,25 @@
+import "./Home.css";
 
-import React from 'react';
-
-import { FaBook, FaCalendarCheck, FaRegListAlt, FaBuilding, FaUserCog, FaSignOutAlt } from "react-icons/fa";
-import './Home.css';
-
-const Home = () => {
-
-    const handleAction = (action) => {
-        alert(`Ação Selecionada: ${action}`);
-    };
-
-    const isAdministrator = true;
-
+const Home = ({ onNavigate }) => {
     return (
-        <div className="container-home">
-            <h1>Welcome to Reserva IFPB!</h1>
-            <p>Select the desired action:</p>
+        <div className="home-page">
+            <div className="container-home">
+                <img
+                    src="/src/assets/Reserva_IFPB_2.png"
+                    alt="Logo Reserva IFPB"
+                    className="home-logo"
+                />
+                <h1>Main Menu</h1>
 
-            <div className="grid-options">
+                <div className="menu-buttons">
+                    <button onClick={() => onNavigate("campus")}>Campus Management</button>
+                    <button onClick={() => onNavigate("block")}>Block Management</button>
+                    <button onClick={() => onNavigate("room")}>Room Management</button>
+                    <button onClick={() => onNavigate("reservation")}>Reservation Management</button>
 
-                <div className="card" onClick={() => handleAction("Reservations")}>
-                    <FaRegListAlt className="icon-home"/>
-                    <h2>Reservations</h2>
-                </div>
+                    <hr style={{ margin: '15px 0', opacity: '0.2' }} />
 
-
-                <div className="card" onClick={() => handleAction("Rooms")}>
-                    <FaBuilding className="icon-home"/>
-                    <h2>Rooms</h2>
-                </div>
-
-
-                {isAdministrator && (
-                    <>
-
-                        <div className="card admin" onClick={() => handleAction("Campus")}>
-                            <FaBuilding className="icon-home"/>
-                            <h2>Campus</h2>
-                        </div>
-
-
-                        <div className="card admin" onClick={() => handleAction("Blocks")}>
-                            <FaBook className="icon-home"/>
-                            <h2>Blocks</h2>
-                        </div>
-                    </>
-                )}
-
-
-                <div className="card" onClick={() => handleAction("Manage Account")}>
-                    <FaUserCog className="icon-home"/>
-                    <h2>Manage Account</h2>
-                </div>
-
-                <div className="card logout" onClick={() => handleAction("Sign Out")}>
-                    <FaSignOutAlt className="icon-home"/>
-                    <h2>Sign Out</h2>
+                    <button className="danger" onClick={() => onNavigate("login")}>Logout</button>
                 </div>
             </div>
         </div>

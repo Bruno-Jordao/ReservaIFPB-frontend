@@ -7,7 +7,7 @@ import RoomFind from "./RoomFind";
 import RoomUpdate from "./RoomUpdate";
 import RoomDelete from "./RoomDelete";
 
-const RoomPage = () => {
+const RoomPage = ({ goHome }) => {
     const [screen, setScreen] = useState("menu");
 
     switch (screen) {
@@ -22,7 +22,7 @@ const RoomPage = () => {
         case "delete":
             return <RoomDelete goBack={() => setScreen("menu")} />;
         default:
-            return <RoomMenu onSelect={setScreen} />;
+            return <RoomMenu onSelect={setScreen} goHome={goHome} />;
     }
 };
 

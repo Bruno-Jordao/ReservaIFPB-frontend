@@ -1,6 +1,6 @@
 import "./RoomMenu.css";
 
-const RoomMenu = ({ onSelect }) => {
+const RoomMenu = ({ onSelect, goHome }) => {
     return (
         <div className="room-page">
             <div className="container-room">
@@ -11,6 +11,13 @@ const RoomMenu = ({ onSelect }) => {
                 <button onClick={() => onSelect("find")}>Find Room by ID</button>
                 <button onClick={() => onSelect("update")}>Update Room</button>
                 <button onClick={() => onSelect("delete")}>Delete Room</button>
+
+                <button
+                    className="secondary-button"
+                    onClick={goHome}
+                >
+                    Back to Home
+                </button>
             </div>
         </div>
     );
