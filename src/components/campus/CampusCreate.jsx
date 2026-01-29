@@ -1,5 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
+import { toast } from "react-toastify";
+import api from "../../services/api";
 import "./Campus.css";
 
 const CampusCreate = ({ goBack }) => {
@@ -8,44 +9,55 @@ const CampusCreate = ({ goBack }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
-            await axios.post("http://localhost:8080/api/v1/campus", {
-                name,
-                uf
+            // Envia para o endpoint singular e campos 'name'/'uf' esperados pelo CampusCreateDto
+            await api.post("/campus", {
+                name: name,
+                uf: uf
             });
 
-            alert("Campus created successfully!");
-            setName("");
-            setUf("");
+            toast.success("Campus cadastrado com sucesso!");
+            goBack(); // Retorna para a listagem
         } catch (error) {
-            console.error(error);
-            alert("Error creating campus");
+            console.error("Erro ao criar campus:", error);
+            const errorMessage = error.response?.data?.message || "Erro ao cadastrar campus.";
+            toast.error(errorMessage);
         }
     };
 
     return (
-        <div className="campus-page">
-            <div className="container-campus">
-                <form onSubmit={handleSubmit}>
-                    <h1>Register Campus</h1>
+        <div className="form-container">
+            <form onSubmit={handleSubmit} className="campus-form">
+                <h2>Cadastrar Nova Unidade</h2>
 
+                <div className="input-group">
+                    <label>Nome do Campus</label>
                     <input
-                        placeholder="Campus name"
+                        type="text"
+                        placeholder="Ex: Campus Monteiro"
+                        required
                         value={name}
                         onChange={e => setName(e.target.value)}
                     />
+                </div>
 
+                <div className="input-group">
+                    <label>UF (Estado)</label>
                     <input
-                        placeholder="UF"
+                        type="text"
+                        placeholder="Ex: PB"
+                        required
+                        maxLength="2"
                         value={uf}
-                        onChange={e => setUf(e.target.value)}
+                        onChange={e => setUf(e.target.value.toUpperCase())}
                     />
+                </div>
 
-                    <button>Create</button>
-                    <button type="button" onClick={goBack}>Back</button>
-                </form>
-            </div>
+                <div className="form-buttons">
+                    <button type="submit" className="save-btn">Salvar Unidade</button>
+                    <button type="button" className="cancel-btn" onClick={goBack}>Cancelar</button>
+                </div>
+            </form>
         </div>
     );
 };

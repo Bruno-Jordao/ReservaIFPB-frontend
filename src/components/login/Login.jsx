@@ -1,70 +1,66 @@
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaUser, FaLock } from "react-icons/fa";
-import { useState } from "react";
-import axios from "axios";
-
-import "./Login.css";
+import { toast } from 'react-toastify';
+import api from '../../services/api';
+import './Login.css';
 
 const Login = () => {
-
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
         try {
-            const response = await axios.post("http://localhost:8080/auth/login", {
+            const response = await api.post('/auth', {
                 email: username,
                 password: password
             });
 
-            console.log(response.data);
-            alert("Login successful!");
-
+            // O backend retorna um objeto JwtToken com o campo 'token'
+            const token = response.data.token;
+            if (token) {
+                localStorage.setItem('token', token);
+                toast.success("Login realizado com sucesso!");
+                navigate('/home');
+            }
         } catch (error) {
-            console.error(error);
-            alert("Invalid username or password");
+            console.error("Erro ao fazer login:", error);
+            const errorMsg = error.response?.data?.message || "E-mail ou senha inválidos.";
+            toast.error(errorMsg);
         }
     };
 
     return (
-        <div className="login-page">
-            <div className="container">
+        <div className="login-container">
+            <div className='login-card'>
                 <form onSubmit={handleSubmit}>
-                    <h1>Access the system</h1>
-
-                    <div className="input-field">
+                    <h1>Reserva IFPB</h1>
+                    <p className="subtitle">Entre com suas credenciais acadêmicas</p>
+                    <div className='input-field'>
+                        <FaUser className='icon' />
                         <input
                             type="email"
-                            placeholder="E-mail"
+                            placeholder='E-mail Institucional'
+                            required
+                            value={username}
                             onChange={(e) => setUsername(e.target.value)}
                         />
-                        <FaUser className="icon" />
                     </div>
-
-                    <div className="input-field">
+                    <div className='input-field'>
+                        <FaLock className='icon' />
                         <input
                             type="password"
-                            placeholder="Password"
+                            placeholder='Senha'
+                            required
+                            value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        <FaLock className="icon" />
                     </div>
-
-                    <div className="recall-forget">
-                        <label>
-                            <input type="checkbox" />
-                            Remember me
-                        </label>
-                        <a href="#">Forgot your password?</a>
-                    </div>
-
-                    <button>Enter</button>
-
-                    <div className="signup-link">
-                        <p>
-                            Don't have an account? <a href="#">Register</a>
-                        </p>
+                    <button type="submit" className="login-button">Entrar</button>
+                    <div className="signup-text">
+                        <p>Não tem uma conta? <Link to="/register">Cadastre-se</Link></p>
                     </div>
                 </form>
             </div>

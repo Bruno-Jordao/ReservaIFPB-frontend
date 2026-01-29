@@ -1,116 +1,119 @@
-import { useState } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { FaUser, FaIdCard, FaEnvelope, FaLock } from "react-icons/fa";
+import { toast } from 'react-toastify';
+import api from '../../services/api';
+import './Register.css';
 
+const Register = () => {
+    const [formData, setFormData] = useState({
+        name: '',
+        enrollment: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    });
+    const navigate = useNavigate();
 
-import "../login/Login.css";
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
-const Register = ({ onLoginClick }) => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    const [name, setName] = useState("");
-    const [registration, setRegistration] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+        if (formData.password !== formData.confirmPassword) {
+            return toast.error("As senhas não coincidem!");
+        }
 
         try {
-
-            const response = await axios.post("http://localhost:8080/api/v1/users", {
-                name: name,
-                registration: registration,
-                email: email,
-                password: password
+            // O payload deve seguir o UserCreateDto do backend
+            await api.post('/users', {
+                name: formData.name,
+                registration: formData.enrollment,
+                email: formData.email,
+                password: formData.password
             });
 
-            console.log(response.data);
-            alert("Registration successful! You can now log in.");
-
-
-            setName("");
-            setRegistration("");
-            setEmail("");
-            setPassword("");
-
+            toast.success("Conta criada com sucesso! Faça seu login.");
+            navigate('/login');
         } catch (error) {
-            console.error(error);
-
-            let errorMessage = "Registration failed! Invalid data or server error.";
-
-            if (error.response && error.response.data) {
-                errorMessage = error.response.data.message || error.response.data.errors;
-            }
-
-            alert(errorMessage);
+            const msg = error.response?.data?.message || "Erro ao realizar cadastro.";
+            toast.error(msg);
         }
     };
-
-
-    const handleRegistrationChange = (e) => {
-        const value = e.target.value;
-
-        if (value === "" || /^\d*$/.test(value)) {
-            setRegistration(value);
-        }
-    };
-
 
     return (
-        <div className="container">
-            <form onSubmit={handleSubmit}>
-                <h1>Register</h1>
+        <div className="register-container">
+            <div className="register-card">
+                <form onSubmit={handleSubmit}>
+                    <h1>Criar Conta</h1>
+                    <p className="subtitle">Junte-se ao sistema de reservas do IFPB</p>
 
-                <div className="input-field">
-                    <input
-                        type="text"
-                        placeholder='Full Name'
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                </div>
+                    <div className="input-field">
+                        <FaUser className="icon" />
+                        <input
+                            name="name"
+                            type="text"
+                            placeholder="Nome Completo"
+                            required
+                            onChange={handleChange}
+                        />
+                    </div>
 
-                <div className="input-field">
-                    <input
-                        type="text"
-                        placeholder='Registration/Matrícula'
-                        value={registration}
-                        onChange={handleRegistrationChange}
-                        required
-                    />
-                </div>
+                    <div className="input-field">
+                        <FaIdCard className="icon" />
+                        <input
+                            name="enrollment"
+                            type="text"
+                            placeholder="Matrícula"
+                            required
+                            onChange={handleChange}
+                        />
+                    </div>
 
-                <div className="input-field">
-                    <input
-                        type="email"
-                        placeholder='Institutional E-mail'
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
+                    <div className="input-field">
+                        <FaEnvelope className="icon" />
+                        <input
+                            name="email"
+                            type="email"
+                            placeholder="E-mail Institucional"
+                            required
+                            onChange={handleChange}
+                        />
+                    </div>
 
-                <div className="input-field">
-                    <input
-                        type="password"
-                        placeholder='Password (min. 8 characters)'
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
+                    <div className="input-field">
+                        <FaLock className="icon" />
+                        <input
+                            name="password"
+                            type="password"
+                            placeholder="Senha"
+                            required
+                            onChange={handleChange}
+                        />
+                    </div>
 
-                <button>Register</button>
+                    <div className="input-field">
+                        <FaLock className="icon" />
+                        <input
+                            name="confirmPassword"
+                            type="password"
+                            placeholder="Confirmar Senha"
+                            required
+                            onChange={handleChange}
+                        />
+                    </div>
 
-                <div className="signup-link">
-                    <p>
-                        Already have an account? <a href="#">Log In</a>
-                    </p>
-                </div>
-            </form>
+                    <button type="submit" className="register-button">Cadastrar</button>
+
+                    <div className="login-link">
+                        <p>Já possui uma conta? <Link to="/login">Faça Login</Link></p>
+                    </div>
+                </form>
+            </div>
         </div>
+    );
+};
 
-    )
-}
-
-export default Register
+export default Register;

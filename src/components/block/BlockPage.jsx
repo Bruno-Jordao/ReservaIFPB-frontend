@@ -1,29 +1,34 @@
 import { useState } from "react";
-
-import BlockMenu from "./BlockMenu";
-import BlockCreate from "./BlockCreate";
 import BlockList from "./BlockList";
-import BlockFind from "./BlockFind";
+import BlockCreate from "./BlockCreate";
 import BlockUpdate from "./BlockUpdate";
-import BlockDelete from "./BlockDelete";
 
-const BlockPage = ({ goHome }) => {
-    const [screen, setScreen] = useState("menu");
+const BlockPage = () => {
+    const [view, setView] = useState("list");
+    const [selectedBlock, setSelectedBlock] = useState(null);
 
-    switch (screen) {
-        case "create":
-            return <BlockCreate goBack={() => setScreen("menu")} />;
-        case "list":
-            return <BlockList goBack={() => setScreen("menu")} />;
-        case "find":
-            return <BlockFind goBack={() => setScreen("menu")} />;
-        case "update":
-            return <BlockUpdate goBack={() => setScreen("menu")} />;
-        case "delete":
-            return <BlockDelete goBack={() => setScreen("menu")} />;
-        default:
-            return <BlockMenu onSelect={setScreen} goHome={goHome} />;
-    }
+    const handleEdit = (block) => {
+        setSelectedBlock(block);
+        setView("update");
+    };
+
+    const handleBack = () => {
+        setSelectedBlock(null);
+        setView("list");
+    };
+
+    return (
+        <div className="page-container">
+            <div className="menu-simples">
+                <button onClick={() => setView("list")}>Listar</button>
+                <button onClick={() => setView("create")}>Novo</button>
+            </div>
+
+            {view === "list" && <BlockList onEdit={handleEdit} />}
+            {view === "create" && <BlockCreate goBack={handleBack} />}
+            {view === "update" && <BlockUpdate block={selectedBlock} goBack={handleBack} />}
+        </div>
+    );
 };
 
 export default BlockPage;

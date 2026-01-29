@@ -1,47 +1,129 @@
-import { useState } from "react";
-import axios from "axios";
-import "./Reservation.css";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaCalendarPlus, FaDoorOpen, FaClock, FaAlignLeft } from "react-icons/fa";
+import { toast } from 'react-toastify';
+import api from '../../services/api';
+import './Reservation.css';
 
-const ReservationRegister = ({ goBack }) => {
-    const [roomId, setRoomId] = useState("");
-    const [teacherId, setTeacherId] = useState("");
-    const [startTime, setStartTime] = useState("");
-    const [endTime, setEndTime] = useState("");
-    const [activity, setActivity] = useState("");
-    const [description, setDescription] = useState("");
+const ReservationRegister = () => {
+    const [rooms, setRooms] = useState([]);
+    const [formData, setFormData] = useState({
+        roomId: '',
+        date: '',
+        startTime: '',
+        endTime: '',
+        reason: '',
+        description: ''
+    });
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchRooms = async () => {
+            try {
+                const response = await api.get('/rooms');
+                setRooms(response.data);
+            } catch (error) {
+                toast.error("Erro ao carregar salas disponíveis.");
+            }
+        };
+        fetchRooms();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:8080/api/v1/reservations", {
-                roomId, teacherId, startTime, endTime, activity, description
-            });
-            alert("Reservation created successfully!");
-            goBack();
+            // Validação simples de horário no front-end
+            if (formData.startTime >= formData.endTime) {
+                toast.error("O horário de término deve ser após o horário de início.");
+                return;
+            }
+
+            await api.post('/reservations', formData);
+            toast.success("Reserva realizada com sucesso!");
+
+            // CORREÇÃO: Ajustado para o plural conforme definido no App.jsx
+            navigate('/reservations');
         } catch (error) {
-            alert("Error creating reservation. Check for schedule conflicts.");
+            const msg = error.response?.data?.message || "Erro ao realizar reserva.";
+            toast.error(msg);
         }
     };
 
     return (
-        <div className="reservation-page">
-            <div className="container-reservation">
+        <div className="reservation-container">
+            <div className="reservation-card">
                 <form onSubmit={handleSubmit}>
-                    <h1>New Reservation</h1>
-                    <input type="number" placeholder="Room ID" value={roomId} onChange={e => setRoomId(e.target.value)} required />
-                    <input type="number" placeholder="Teacher ID" value={teacherId} onChange={e => setTeacherId(e.target.value)} required />
+                    <h1>Nova Reserva</h1>
+                    <p className="subtitle">Agende uma instalação para a sua atividade</p>
 
-                    <div className="info-text" style={{fontSize: '12px', marginBottom: '-5px', color: '#fff'}}>Start Time:</div>
-                    <input type="datetime-local" value={startTime} onChange={e => setStartTime(e.target.value)} required />
+                    <div className="input-field">
+                        <FaDoorOpen className="icon" />
+                        <select
+                            required
+                            value={formData.roomId}
+                            onChange={(e) => setFormData({...formData, roomId: e.target.value})}
+                        >
+                            <option value="">Selecione a Sala</option>
+                            {rooms.map(room => (
+                                <option key={room.id} value={room.id}>{room.name}</option>
+                            ))}
+                        </select>
+                    </div>
 
-                    <div className="info-text" style={{fontSize: '12px', marginBottom: '-5px', color: '#fff'}}>End Time:</div>
-                    <input type="datetime-local" value={endTime} onChange={e => setEndTime(e.target.value)} required />
+                    <div className="input-field">
+                        <FaCalendarPlus className="icon" />
+                        <input
+                            type="date"
+                            required
+                            value={formData.date}
+                            onChange={(e) => setFormData({...formData, date: e.target.value})}
+                        />
+                    </div>
 
-                    <input placeholder="Activity (e.g. Class)" value={activity} onChange={e => setActivity(e.target.value)} required />
-                    <textarea placeholder="Description (optional)" value={description} onChange={e => setDescription(e.target.value)} />
+                    <div className="time-group">
+                        <div className="input-field">
+                            <FaClock className="icon" />
+                            <input
+                                type="time"
+                                required
+                                value={formData.startTime}
+                                onChange={(e) => setFormData({...formData, startTime: e.target.value})}
+                            />
+                        </div>
+                        <div className="input-field">
+                            <FaClock className="icon" />
+                            <input
+                                type="time"
+                                required
+                                value={formData.endTime}
+                                onChange={(e) => setFormData({...formData, endTime: e.target.value})}
+                            />
+                        </div>
+                    </div>
 
-                    <button type="submit">Register</button>
-                    <button type="button" onClick={goBack}>Back</button>
+                    <div className="input-field">
+                        <FaAlignLeft className="icon" />
+                        <input
+                            type="text"
+                            placeholder="Motivo (ex: Aula, Prova)"
+                            required
+                            value={formData.reason}
+                            onChange={(e) => setFormData({...formData, reason: e.target.value})}
+                        />
+                    </div>
+
+                    <div className="input-field">
+                        <textarea
+                            placeholder="Descrição adicional"
+                            value={formData.description}
+                            onChange={(e) => setFormData({...formData, description: e.target.value})}
+                        ></textarea>
+                    </div>
+
+                    <div className="button-group">
+                        <button type="submit" className="save-button">Confirmar Reserva</button>
+                        <button type="button" className="cancel-button" onClick={() => navigate('/home')}>Voltar</button>
+                    </div>
                 </form>
             </div>
         </div>

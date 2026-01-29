@@ -1,55 +1,64 @@
 import { useState } from "react";
-import axios from "axios";
+import { toast } from "react-toastify";
+import api from "../../services/api"; // Usando sua instância configurada
 import "./Campus.css";
 
-const CampusUpdate = ({ goBack }) => {
-    const [id, setId] = useState("");
-    const [name, setName] = useState("");
-    const [uf, setUf] = useState("");
+const CampusUpdate = ({ campus, goBack }) => {
+    // Inicializa com 'uf' em vez de 'city' para alinhar com o Backend
+    const [name, setName] = useState(campus?.name || "");
+    const [uf, setUf] = useState(campus?.uf || "");
 
-    const handleUpdate = async () => {
+    const handleUpdate = async (e) => {
+        e.preventDefault();
         try {
-            await axios.put(
-                `http://localhost:8080/api/v1/campus/${id}`,
-                { name, uf }
-            );
+            // Rota corrigida para o singular /campus e campos name/uf
+            await api.put(`/campus/${campus.id}`, {
+                name: name,
+                uf: uf.toUpperCase()
+            });
 
-            alert("Campus updated successfully!");
-            setId("");
-            setName("");
-            setUf("");
+            toast.success("Campus atualizado com sucesso!");
+            goBack(); // Retorna para a listagem
         } catch (error) {
-            console.error(error);
-            alert("Error updating campus");
+            console.error("Erro ao atualizar campus:", error);
+            const errorMessage = error.response?.data?.message || "Erro ao atualizar campus.";
+            toast.error(errorMessage);
         }
     };
 
     return (
-        <div className="campus-page">
-            <div className="container-campus">
-                <h1>Update Campus</h1>
+        <div className="form-container">
+            <form onSubmit={handleUpdate} className="campus-form">
+                <h2>Editar Unidade</h2>
 
-                <input
-                    placeholder="Campus ID"
-                    value={id}
-                    onChange={e => setId(e.target.value)}
-                />
+                <div className="input-group">
+                    <label>Nome do Campus</label>
+                    <input
+                        type="text"
+                        placeholder="Ex: Campus Monteiro"
+                        required
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                    />
+                </div>
 
-                <input
-                    placeholder="New Name"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                />
+                <div className="input-group">
+                    <label>UF (Estado)</label>
+                    <input
+                        type="text"
+                        placeholder="Ex: PB"
+                        required
+                        maxLength="2"
+                        value={uf}
+                        onChange={e => setUf(e.target.value.toUpperCase())}
+                    />
+                </div>
 
-                <input
-                    placeholder="New UF"
-                    value={uf}
-                    onChange={e => setUf(e.target.value)}
-                />
-
-                <button onClick={handleUpdate}>Update</button>
-                <button onClick={goBack}>Back</button>
-            </div>
+                <div className="form-buttons">
+                    <button type="submit" className="save-btn">Salvar Alterações</button>
+                    <button type="button" className="cancel-btn" onClick={goBack}>Cancelar</button>
+                </div>
+            </form>
         </div>
     );
 };

@@ -1,34 +1,54 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { toast } from 'react-toastify';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import api from "../../services/api"; //
 import "./Room.css";
 
-const RoomList = ({ goBack }) => {
+const RoomList = ({ onEdit }) => { // Recebe onEdit do RoomPage
     const [rooms, setRooms] = useState([]);
 
+    const fetchRooms = async () => {
+        try {
+            const response = await api.get("/rooms"); // Usa base centralizada
+            setRooms(response.data);
+        } catch (error) {
+            toast.error("Erro ao carregar salas.");
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (window.confirm("Deseja realmente eliminar esta sala?")) {
+            try {
+                await api.delete(`/rooms/${id}`);
+                toast.success("Sala eliminada com sucesso!");
+                fetchRooms();
+            } catch (error) {
+                toast.error("Erro ao eliminar sala.");
+            }
+        }
+    };
+
     useEffect(() => {
-        axios.get("http://localhost:8080/api/v1/rooms")
-            .then(res => setRooms(res.data))
-            .catch(() => alert("Error loading rooms"));
+        fetchRooms();
     }, []);
 
     return (
-        <div className="room-page">
-            <div className="container-room">
-                <h1>Registered Rooms</h1>
-
-                <ul className="room-list">
-                    {rooms.map(r => (
-                        <li key={r.id} className="room-item">
-                            <strong>ID:</strong> {r.id}<br/>
-                            <strong>Name:</strong> {r.name}<br/>
-                            <strong>Capacity:</strong> {r.capacity}<br/>
-                            <strong>Floor:</strong> {r.floor}<br/>
-                            <strong>Block:</strong> {r.blockId}
-                        </li>
-                    ))}
-                </ul>
-
-                <button onClick={goBack}>Back</button>
+        <div className="room-list">
+            <h2>Salas Disponíveis</h2>
+            <div className="room-grid">
+                {rooms.map((room) => (
+                    <div key={room.id} className="room-item-card">
+                        <span><strong>{room.name}</strong> - Bloco: {room.blockName}</span>
+                        <div className="actions">
+                            <button className="edit-btn" onClick={() => onEdit(room)}>
+                                <FaEdit />
+                            </button>
+                            <button className="delete-btn" onClick={() => handleDelete(room.id)}>
+                                <FaTrash />
+                            </button>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );

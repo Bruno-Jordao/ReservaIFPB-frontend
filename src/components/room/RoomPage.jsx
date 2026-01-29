@@ -1,29 +1,45 @@
 import { useState } from "react";
-
-import RoomMenu from "./RoomMenu";
-import RoomCreate from "./RoomCreate";
 import RoomList from "./RoomList";
-import RoomFind from "./RoomFind";
+import RoomCreate from "./RoomCreate";
 import RoomUpdate from "./RoomUpdate";
-import RoomDelete from "./RoomDelete";
 
-const RoomPage = ({ goHome }) => {
-    const [screen, setScreen] = useState("menu");
+const RoomPage = () => {
+    const [view, setView] = useState("list");
+    const [selectedRoom, setSelectedRoom] = useState(null);
 
-    switch (screen) {
-        case "create":
-            return <RoomCreate goBack={() => setScreen("menu")} />;
-        case "list":
-            return <RoomList goBack={() => setScreen("menu")} />;
-        case "find":
-            return <RoomFind goBack={() => setScreen("menu")} />;
-        case "update":
-            return <RoomUpdate goBack={() => setScreen("menu")} />;
-        case "delete":
-            return <RoomDelete goBack={() => setScreen("menu")} />;
-        default:
-            return <RoomMenu onSelect={setScreen} goHome={goHome} />;
-    }
+    const handleEdit = (room) => {
+        setSelectedRoom(room);
+        setView("update");
+    };
+
+    return (
+        <div className="room-management">
+            <div className="room-actions">
+                <button onClick={() => setView("list")}>Listar Salas</button>
+                <button onClick={() => setView("create")}>Nova Sala</button>
+            </div>
+
+            <div className="room-content">
+                {view === "list" && (
+                    <RoomList onEdit={handleEdit} />
+                )}
+
+                {view === "create" && (
+                    <RoomCreate goBack={() => setView("list")} />
+                )}
+
+                {view === "update" && (
+                    <RoomUpdate
+                        room={selectedRoom}
+                        goBack={() => {
+                            setSelectedRoom(null);
+                            setView("list");
+                        }}
+                    />
+                )}
+            </div>
+        </div>
+    );
 };
 
 export default RoomPage;

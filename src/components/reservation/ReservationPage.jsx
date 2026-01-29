@@ -1,28 +1,47 @@
 import { useState } from "react";
-import ReservationMenu from "./ReservationMenu";
-import ReservationRegister from "./ReservationRegister";
 import ReservationList from "./ReservationList";
-import ReservationFind from "./ReservationFind";
+import ReservationRegister from "./ReservationRegister";
 import ReservationUpdate from "./ReservationUpdate";
-import ReservationDelete from "./ReservationDelete";
 
-const ReservationPage = ({ goHome }) => {
-    const [screen, setScreen] = useState("menu");
+const ReservationPage = () => {
+    const [view, setView] = useState("list");
+    const [selectedReservation, setSelectedReservation] = useState(null);
 
-    switch (screen) {
-        case "create":
-            return <ReservationRegister goBack={() => setScreen("menu")} />;
-        case "list":
-            return <ReservationList goBack={() => setScreen("menu")} />;
-        case "find":
-            return <ReservationFind goBack={() => setScreen("menu")} />;
-        case "update":
-            return <ReservationUpdate goBack={() => setScreen("menu")} />;
-        case "delete":
-            return <ReservationDelete goBack={() => setScreen("menu")} />;
-        default:
-            return <ReservationMenu onSelect={setScreen} goHome={goHome} />;
-    }
+    const handleEdit = (reservation) => {
+        setSelectedReservation(reservation);
+        setView("update");
+    };
+
+    const handleBack = () => {
+        setSelectedReservation(null);
+        setView("list");
+    };
+
+    return (
+        <div className="reservation-management">
+            <div className="reservation-actions">
+                <button onClick={() => setView("list")}>Minhas Reservas</button>
+                <button onClick={() => setView("create")}>Nova Reserva</button>
+            </div>
+
+            <div className="reservation-content">
+                {view === "list" && (
+                    <ReservationList onEdit={handleEdit} />
+                )}
+
+                {view === "create" && (
+                    <ReservationRegister goBack={handleBack} />
+                )}
+
+                {view === "update" && (
+                    <ReservationUpdate
+                        reservation={selectedReservation}
+                        goBack={handleBack}
+                    />
+                )}
+            </div>
+        </div>
+    );
 };
 
 export default ReservationPage;

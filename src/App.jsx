@@ -1,46 +1,68 @@
-import { useState } from "react";
-import Home from "./components/home/Home";
-import CampusPage from "./components/campus/CampusPage";
-import ReservationPage from "./components/reservation/ReservationPage";
-// Importe os outros componentes conforme sua estrutura
-import BlockPage from "./components/block/BlockPage";
-import RoomPage from "./components/room/RoomPage";
-import Login from "./components/login/Login";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// Importação de Componentes
+import Login from './components/login/Login';
+import Register from './components/register/Register';
+import Home from './components/home/Home';
+import CampusPage from './components/campus/CampusPage';
+import BlockPage from './components/block/BlockPage';
+import RoomPage from './components/room/RoomPage';
+import ReservationPage from './components/reservation/ReservationPage';
+
+// Componente para proteger rotas privadas
+const PrivateRoute = ({ children }) => {
+    const token = localStorage.getItem('token');
+    return token ? children : <Navigate replace to="/" />;
+};
 
 function App() {
-    const [currentPage, setCurrentPage] = useState("home");
-
-    // Função que será passada para a Home
-    const handleNavigate = (page) => {
-        setCurrentPage(page);
-    };
-
-    // Função para voltar à Home (passada para as subpáginas)
-    const goHome = () => setCurrentPage("home");
-
-    const renderPage = () => {
-        switch (currentPage) {
-            case "home":
-                return <Home onNavigate={handleNavigate} />;
-            case "campus":
-                return <CampusPage goHome={goHome} />;
-            case "reservation":
-                return <ReservationPage goHome={goHome} />;
-            case "block":
-                return <BlockPage goHome={goHome} />;
-            case "room":
-                return <RoomPage goHome={goHome} />;
-            case "login":
-                return <Login onLoginSuccess={() => setCurrentPage("home")} />;
-            default:
-                return <Home onNavigate={handleNavigate} />;
-        }
-    };
-
     return (
-        <div className="App">
-            {renderPage()}
-        </div>
+        <Router>
+            <ToastContainer autoClose={3000} position="top-right" />
+            <Routes>
+                {/* Rotas Públicas */}
+                <Route path="/" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+
+                {/* Rotas Privadas (Protegidas) */}
+                <Route path="/home" element={
+                    <PrivateRoute>
+                        <Home />
+                    </PrivateRoute>
+                } />
+
+                {/* Padronização para Plural conforme definido no Home.jsx */}
+                <Route path="/campus" element={
+                    <PrivateRoute>
+                        <CampusPage />
+                    </PrivateRoute>
+                } />
+
+                <Route path="/blocks/*" element={
+                    <PrivateRoute>
+                        <BlockPage />
+                    </PrivateRoute>
+                } />
+
+                <Route path="/rooms/*" element={
+                    <PrivateRoute>
+                        <RoomPage />
+                    </PrivateRoute>
+                } />
+
+                <Route path="/reservations/*" element={
+                    <PrivateRoute>
+                        <ReservationPage />
+                    </PrivateRoute>
+                } />
+
+                {/* Redirecionamento de rotas inexistentes */}
+                <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+        </Router>
     );
 }
 

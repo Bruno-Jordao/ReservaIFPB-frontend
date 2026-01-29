@@ -1,32 +1,66 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { toast } from 'react-toastify';
+import { FaEdit, FaTrash, FaMapMarkerAlt } from 'react-icons/fa';
+import api from "../../services/api";
 import "./Campus.css";
 
-const CampusList = ({ goBack }) => {
-    const [campus, setCampus] = useState([]);
+const CampusList = ({ onEdit }) => {
+    const [campuses, setCampuses] = useState([]);
+
+    const fetchCampuses = async () => {
+        try {
+            // URL corrigida para o singular conforme mapeado no CampusController do backend
+            const response = await api.get("/campus");
+            setCampuses(response.data);
+        } catch (error) {
+            console.error("Erro ao buscar campi:", error);
+            toast.error("Erro ao carregar lista de campi.");
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (window.confirm("Deseja realmente excluir este campus?")) {
+            try {
+                await api.delete(`/campus/${id}`);
+                toast.success("Campus removido com sucesso!");
+                fetchCampuses();
+            } catch (error) {
+                toast.error("Erro ao excluir. Verifique se você possui perfil de ADMIN.");
+            }
+        }
+    };
 
     useEffect(() => {
-        axios.get("http://localhost:8080/api/v1/campus")
-            .then(res => setCampus(res.data))
-            .catch(() => alert("Error loading campus"));
+        fetchCampuses();
     }, []);
 
     return (
-        <div className="campus-page">
-            <div className="container-campus">
-                <h1>Registered Campus</h1>
-
-                <ul className="campus-list">
-                    {campus.map(c => (
-                        <li key={c.id} className="campus-item">
-                            <strong>ID:</strong> {c.id}<br />
-                            <strong>Name:</strong> {c.name}<br />
-                            <strong>UF:</strong> {c.uf}
-                        </li>
-                    ))}
-                </ul>
-
-                <button onClick={goBack}>Back</button>
+        <div className="campus-list-container">
+            <div className="campus-grid">
+                {campuses.length > 0 ? (
+                    campuses.map((campus) => (
+                        <div key={campus.id} className="campus-card">
+                            <div className="info">
+                                <FaMapMarkerAlt className="marker-icon" />
+                                <div>
+                                    <strong>{campus.name}</strong>
+                                    {/* Campo 'uf' mapeado conforme o DTO do backend */}
+                                    <span className="uf-badge">{campus.uf}</span>
+                                </div>
+                            </div>
+                            <div className="actions">
+                                <button onClick={() => onEdit(campus)} className="edit-btn" title="Editar">
+                                    <FaEdit />
+                                </button>
+                                <button onClick={() => handleDelete(campus.id)} className="delete-btn" title="Excluir">
+                                    <FaTrash />
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <p className="empty-msg">Nenhum campus cadastrado no momento.</p>
+                )}
             </div>
         </div>
     );
