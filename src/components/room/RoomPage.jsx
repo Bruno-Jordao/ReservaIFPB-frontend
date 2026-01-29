@@ -1,43 +1,42 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import { FaPlus, FaList, FaArrowLeft } from 'react-icons/fa';
 import RoomList from "./RoomList";
 import RoomCreate from "./RoomCreate";
 import RoomUpdate from "./RoomUpdate";
+import './Room.css';
 
 const RoomPage = () => {
     const [view, setView] = useState("list");
     const [selectedRoom, setSelectedRoom] = useState(null);
-
-    const handleEdit = (room) => {
-        setSelectedRoom(room);
-        setView("update");
-    };
+    const navigate = useNavigate();
 
     return (
-        <div className="room-management">
-            <div className="room-actions">
-                <button onClick={() => setView("list")}>Listar Salas</button>
-                <button onClick={() => setView("create")}>Nova Sala</button>
-            </div>
+        <div className="hub-container">
+            <header className="hub-header">
+                <h1>Gestão de Salas</h1>
+                <p>Gerencie as salas de aula, laboratórios e auditórios</p>
 
-            <div className="room-content">
+                <div className="hub-nav-actions">
+                    <button className={`nav-btn ${view === "list" ? "active" : ""}`} onClick={() => setView("list")}>
+                        <FaList /> Listar Salas
+                    </button>
+                    <button className={`nav-btn ${view === "create" ? "active" : ""}`} onClick={() => setView("create")}>
+                        <FaPlus /> Nova Sala
+                    </button>
+                    <button className="nav-btn back" onClick={() => navigate('/home')}>
+                        <FaArrowLeft /> Voltar ao Hub
+                    </button>
+                </div>
+            </header>
+
+            <main className="hub-content">
                 {view === "list" && (
-                    <RoomList onEdit={handleEdit} />
+                    <RoomList onEdit={(r) => { setSelectedRoom(r); setView("update"); }} />
                 )}
-
-                {view === "create" && (
-                    <RoomCreate goBack={() => setView("list")} />
-                )}
-
-                {view === "update" && (
-                    <RoomUpdate
-                        room={selectedRoom}
-                        goBack={() => {
-                            setSelectedRoom(null);
-                            setView("list");
-                        }}
-                    />
-                )}
-            </div>
+                {view === "create" && <RoomCreate goBack={() => setView("list")} />}
+                {view === "update" && <RoomUpdate room={selectedRoom} goBack={() => setView("list")} />}
+            </main>
         </div>
     );
 };

@@ -4,7 +4,7 @@ const api = axios.create({
     baseURL: 'http://localhost:8080/api/v1'
 });
 
-// Interceptor de Requisição: Envia o token se existir
+// Injeta o token automaticamente se o utilizador estiver logado
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -13,7 +13,6 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// Interceptor de Resposta: Trata erro 401 (Não autorizado)
 api.interceptors.response.use(
     (response) => response,
     (error) => {

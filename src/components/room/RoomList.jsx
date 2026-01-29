@@ -1,29 +1,30 @@
 import { useEffect, useState } from "react";
 import { toast } from 'react-toastify';
-import { FaEdit, FaTrash } from 'react-icons/fa';
-import api from "../../services/api"; //
+import { FaEdit, FaTrash, FaDoorOpen } from 'react-icons/fa';
+import api from "../../services/api";
 import "./Room.css";
 
-const RoomList = ({ onEdit }) => { // Recebe onEdit do RoomPage
+const RoomList = ({ onEdit }) => {
     const [rooms, setRooms] = useState([]);
 
     const fetchRooms = async () => {
         try {
-            const response = await api.get("/rooms"); // Usa base centralizada
+            const response = await api.get("/room");
             setRooms(response.data);
         } catch (error) {
-            toast.error("Erro ao carregar salas.");
+            console.error("Erro ao buscar salas:", error);
+            toast.error("Erro ao carregar lista de salas.");
         }
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("Deseja realmente eliminar esta sala?")) {
+        if (window.confirm("Deseja realmente excluir esta sala?")) {
             try {
-                await api.delete(`/rooms/${id}`);
-                toast.success("Sala eliminada com sucesso!");
+                await api.delete(`/room/${id}`);
+                toast.success("Sala removida com sucesso!");
                 fetchRooms();
             } catch (error) {
-                toast.error("Erro ao eliminar sala.");
+                toast.error("Erro ao excluir. Verifique suas permissões.");
             }
         }
     };
@@ -33,22 +34,31 @@ const RoomList = ({ onEdit }) => { // Recebe onEdit do RoomPage
     }, []);
 
     return (
-        <div className="room-list">
-            <h2>Salas Disponíveis</h2>
+        <div className="room-list-container">
             <div className="room-grid">
-                {rooms.map((room) => (
-                    <div key={room.id} className="room-item-card">
-                        <span><strong>{room.name}</strong> - Bloco: {room.blockName}</span>
-                        <div className="actions">
-                            <button className="edit-btn" onClick={() => onEdit(room)}>
-                                <FaEdit />
-                            </button>
-                            <button className="delete-btn" onClick={() => handleDelete(room.id)}>
-                                <FaTrash />
-                            </button>
+                {rooms.length > 0 ? (
+                    rooms.map((room) => (
+                        <div key={room.id} className="room-card">
+                            <div className="room-info">
+                                <FaDoorOpen style={{ fontSize: '1.5rem', marginRight: '15px', color: '#4caf50' }} />
+                                <div>
+                                    <strong>{room.name}</strong>
+                                    <span>Capacidade: {room.capacity} | Bloco: {room.blockName}</span>
+                                </div>
+                            </div>
+                            <div className="actions">
+                                <button onClick={() => onEdit(room)} className="edit-btn" title="Editar">
+                                    <FaEdit />
+                                </button>
+                                <button onClick={() => handleDelete(room.id)} className="delete-btn" title="Excluir">
+                                    <FaTrash />
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                ) : (
+                    <p className="empty-msg">Nenhuma sala cadastrada no momento.</p>
+                )}
             </div>
         </div>
     );

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "./Room.css";
+import "../campus/Campus.css";
 
 const RoomUpdate = ({ room, goBack }) => {
     const [name, setName] = useState(room?.name || "");

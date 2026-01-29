@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import api from "../../services/api";
 import "./Block.css";
@@ -11,52 +11,64 @@ const BlockCreate = ({ goBack }) => {
     useEffect(() => {
         const fetchCampuses = async () => {
             try {
-                const response = await api.get("/campuses");
-                setCampuses(response.data);
-            } catch {
-                toast.error("Erro ao carregar campi para seleção.");
+                // CORREÇÃO: Endpoint singular de acordo com o CampusController.java
+                const response = await api.get("/campus");
+                setCampuses(Array.isArray(response.data) ? response.data : []);
+            } catch (error) {
+                toast.error("Erro ao carregar a lista de campus.");
             }
         };
         fetchCampuses();
     }, []);
 
-    const handleSubmit = async (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
+        if (!campusId) {
+            toast.warning("Por favor, selecione um campus.");
+            return;
+        }
         try {
-            await api.post("/blocks", {
+            await api.post("/block", {
                 name,
                 campusId: Number(campusId)
             });
             toast.success("Bloco criado com sucesso!");
             goBack();
         } catch (error) {
-            toast.error("Erro ao criar bloco. Verifique se o nome já existe.");
+            toast.error("Erro ao criar bloco.");
         }
     };
 
     return (
-        <div className="block-form-container">
-            <form onSubmit={handleSubmit}>
-                <h1>Novo Bloco</h1>
-                <input
-                    placeholder="Nome do Bloco (ex: Bloco A)"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    required
-                />
-                <select
-                    value={campusId}
-                    onChange={e => setCampusId(e.target.value)}
-                    required
-                >
-                    <option value="">Selecione o Campus</option>
-                    {campuses.map(c => (
-                        <option key={c.id} value={c.id}>{c.name}</option>
-                    ))}
-                </select>
-                <div className="button-group">
-                    <button type="submit" className="save-button">Guardar</button>
-                    <button type="button" onClick={goBack} className="cancel-button">Cancelar</button>
+        <div className="form-container">
+            <form onSubmit={handleSave} className="campus-form">
+                <h2>Cadastrar Novo Bloco</h2>
+                <div className="input-group">
+                    <label>Nome do Bloco</label>
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        placeholder="Ex: Bloco A"
+                    />
+                </div>
+                <div className="input-group">
+                    <label>Campus Responsável</label>
+                    <select
+                        value={campusId}
+                        onChange={(e) => setCampusId(e.target.value)}
+                        required
+                    >
+                        <option value="">Selecione um campus...</option>
+                        {campuses.map((c) => (
+                            <option key={c.id} value={c.id}>{c.name}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="form-buttons">
+                    <button type="submit" className="save-btn">Salvar</button>
+                    <button type="button" className="cancel-btn" onClick={goBack}>Cancelar</button>
                 </div>
             </form>
         </div>

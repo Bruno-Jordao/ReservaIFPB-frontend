@@ -12,7 +12,6 @@ import BlockPage from './components/block/BlockPage';
 import RoomPage from './components/room/RoomPage';
 import ReservationPage from './components/reservation/ReservationPage';
 
-// Componente para proteger rotas privadas
 const PrivateRoute = ({ children }) => {
     const token = localStorage.getItem('token');
     return token ? children : <Navigate replace to="/" />;
@@ -23,43 +22,16 @@ function App() {
         <Router>
             <ToastContainer autoClose={3000} position="top-right" />
             <Routes>
-                {/* Rotas Públicas */}
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 
-                {/* Rotas Privadas (Protegidas) */}
-                <Route path="/home" element={
-                    <PrivateRoute>
-                        <Home />
-                    </PrivateRoute>
-                } />
+                {/* Rotas Privadas - Removido o /* para evitar telas brancas */}
+                <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
+                <Route path="/campus" element={<PrivateRoute><CampusPage /></PrivateRoute>} />
+                <Route path="/blocks" element={<PrivateRoute><BlockPage /></PrivateRoute>} />
+                <Route path="/rooms" element={<PrivateRoute><RoomPage /></PrivateRoute>} />
+                <Route path="/reservations" element={<PrivateRoute><ReservationPage /></PrivateRoute>} />
 
-                {/* Padronização para Plural conforme definido no Home.jsx */}
-                <Route path="/campus" element={
-                    <PrivateRoute>
-                        <CampusPage />
-                    </PrivateRoute>
-                } />
-
-                <Route path="/blocks/*" element={
-                    <PrivateRoute>
-                        <BlockPage />
-                    </PrivateRoute>
-                } />
-
-                <Route path="/rooms/*" element={
-                    <PrivateRoute>
-                        <RoomPage />
-                    </PrivateRoute>
-                } />
-
-                <Route path="/reservations/*" element={
-                    <PrivateRoute>
-                        <ReservationPage />
-                    </PrivateRoute>
-                } />
-
-                {/* Redirecionamento de rotas inexistentes */}
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
         </Router>

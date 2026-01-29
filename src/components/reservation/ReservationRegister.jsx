@@ -20,7 +20,7 @@ const ReservationRegister = () => {
     useEffect(() => {
         const fetchRooms = async () => {
             try {
-                const response = await api.get('/rooms');
+                const response = await api.get('/room');
                 setRooms(response.data);
             } catch (error) {
                 toast.error("Erro ao carregar salas disponíveis.");
@@ -31,17 +31,22 @@ const ReservationRegister = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Recuperar o ID do utilizador logado (assumindo que guardou no login)
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        const payload = {
+            teacherId: user.id, // Adicionado para satisfazer o DTO
+            roomId: Number(formData.roomId),
+            startTime: `${formData.date}T${formData.startTime}:00`, // Formata para LocalDateTime
+            endTime: `${formData.date}T${formData.endTime}:00`,
+            description: formData.description,
+            activity: formData.reason // Renomeado de reason para activity
+        };
+
         try {
-            // Validação simples de horário no front-end
-            if (formData.startTime >= formData.endTime) {
-                toast.error("O horário de término deve ser após o horário de início.");
-                return;
-            }
-
-            await api.post('/reservations', formData);
+            await api.post('/reservations', payload); // Rota corrigida para plural
             toast.success("Reserva realizada com sucesso!");
-
-            // CORREÇÃO: Ajustado para o plural conforme definido no App.jsx
             navigate('/reservations');
         } catch (error) {
             const msg = error.response?.data?.message || "Erro ao realizar reserva.";

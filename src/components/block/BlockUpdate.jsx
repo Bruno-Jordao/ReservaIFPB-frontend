@@ -1,90 +1,45 @@
 import { useState } from "react";
-import axios from "axios";
+import { toast } from "react-toastify";
+import api from "../../services/api";
 import "./Block.css";
 
-const BlockUpdate = ({ goBack }) => {
-
-    const [id, setId] = useState("");
-    const [name, setName] = useState("");
-    const [campusId, setCampusId] = useState("");
-    const [loading, setLoading] = useState(false);
+const BlockUpdate = ({ block, goBack }) => {
+    const [name, setName] = useState(block?.name || "");
+    const [campusId, setCampusId] = useState(block?.campusId || "");
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-
-        if (!id || !name || !campusId) {
-            alert("Fill all fields");
-            return;
-        }
-
-        setLoading(true);
-
         try {
-            await axios.put(
-                `http://localhost:8080/api/v1/blocks/${id}`,
-                {
-                    name: name,
-                    campusId: Number(campusId)
-                }
-            );
-
-            alert("Block updated successfully");
-
-            setId("");
-            setName("");
-            setCampusId("");
-
+            await api.put(`/blocks/${block.id}`, {
+                name: name,
+                campusId: Number(campusId)
+            });
+            toast.success("Bloco atualizado com sucesso!");
+            goBack();
         } catch (error) {
-            console.error(error);
-            alert("Error updating block");
-        } finally {
-            setLoading(false);
+            toast.error("Erro ao atualizar bloco.");
         }
     };
 
     return (
-        <div className="block-page">
-            <div className="container-block">
-                <h1>Update Block</h1>
-
-                <form onSubmit={handleUpdate}>
-                    <div className="input-field">
-                        <input
-                            type="number"
-                            placeholder="Block ID"
-                            value={id}
-                            onChange={(e) => setId(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="input-field">
-                        <input
-                            type="text"
-                            placeholder="New name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="input-field">
-                        <input
-                            type="number"
-                            placeholder="New Campus ID"
-                            value={campusId}
-                            onChange={(e) => setCampusId(e.target.value)}
-                        />
-                    </div>
-
-                    <button disabled={loading}>
-                        {loading ? "Updating..." : "Update"}
-                    </button>
-                </form>
-
-                <button onClick={goBack}>Back to menu</button>
-            </div>
+        <div className="form-container">
+            <form onSubmit={handleUpdate} className="campus-form">
+                <h2>Editar Bloco: {block?.name}</h2>
+                <div className="input-group">
+                    <label>Nome do Bloco</label>
+                    <input value={name} onChange={e => setName(e.target.value)} required />
+                </div>
+                <div className="input-group">
+                    <label>ID do Campus</label>
+                    <input type="number" value={campusId} onChange={e => setCampusId(e.target.value)} required />
+                </div>
+                <div className="form-buttons">
+                    <button type="submit" className="save-btn">Salvar Alterações</button>
+                    <button type="button" className="cancel-btn" onClick={goBack}>Cancelar</button>
+                </div>
+            </form>
         </div>
     );
 };
 
 export default BlockUpdate;
-
